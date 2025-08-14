@@ -1,0 +1,13 @@
+pandas
+sentence-transformers
+faiss-cpu
+numpy
+scikit-learn
+flask
+torch
+transformers
+langchain
+langchain-community
+accelerate
+langchain-huggingface
+langchainhub
