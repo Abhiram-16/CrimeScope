@@ -1,4 +1,4 @@
-# 🛡️ Crime Chronicle
+# 🛡️ CrimeScope
 
 > An intelligent crime analysis chatbot powered by local LLMs that combines historical crime data retrieval with predictive forecasting for Buffalo crime data.
 
@@ -31,7 +31,7 @@
 
 ## 🎯 Project Overview
 
-Crime Chronicle is a sophisticated local LLM-powered chatbot that revolutionizes crime data analysis. It combines the power of retrieval-augmented generation (RAG) with predictive analytics to provide comprehensive insights into Buffalo's crime patterns.
+CrimeScope is a sophisticated local LLM-powered chatbot that revolutionizes crime data analysis. It combines the power of retrieval-augmented generation (RAG) with predictive analytics to provide comprehensive insights into Buffalo's crime patterns.
 
 ### Key Capabilities
 
@@ -151,7 +151,7 @@ Before you begin, ensure you have the following installed:
 ## 📁 Project Structure
 
 ```
-crime-chronicle/
+crime-scope/
 ├── 📁 src/                          # Source code
 │   ├── app.py                       # Flask web application
 │   ├── agent_ollama.py              # LLM agent with tools
@@ -185,25 +185,25 @@ crime-chronicle/
 ### Historical Crime Analysis
 ```
 👤 User: "What crimes happened in District C?"
-🤖 Crime Chronicle: "Based on the historical data, I found 5 recent incidents in District C: 2 theft cases on Oak Street and Main Avenue, 1 assault incident near the downtown area, 1 vandalism case at a local business, and 1 burglary on Elm Street. Most incidents occurred during evening hours between 6-10 PM."
+🤖 CrimeScope: "Based on the historical data, I found 5 recent incidents in District C: 2 theft cases on Oak Street and Main Avenue, 1 assault incident near the downtown area, 1 vandalism case at a local business, and 1 burglary on Elm Street. Most incidents occurred during evening hours between 6-10 PM."
 ```
 
 ### Predictive Forecasting
 ```
 👤 User: "Predict crime for the next 7 days"
-🤖 Crime Chronicle: "Based on historical patterns and current trends, I predict approximately 8.3 incidents after 7 days (last data date: 2024-01-15). This represents a moderate increase from the baseline, likely influenced by weekend activity patterns."
+🤖 CrimeScope: "Based on historical patterns and current trends, I predict approximately 8.3 incidents after 7 days (last data date: 2024-01-15). This represents a moderate increase from the baseline, likely influenced by weekend activity patterns."
 ```
 
 ### District Comparisons
 ```
 👤 User: "Show me crimes in District A"
-🤖 Crime Chronicle: "I found 5 recent incidents in District A: 3 theft cases including vehicle break-ins and shoplifting, 1 assault case near the university area, and 1 drug-related incident. The pattern shows higher activity on weekends, particularly in commercial zones."
+🤖 CrimeScope: "I found 5 recent incidents in District A: 3 theft cases including vehicle break-ins and shoplifting, 1 assault case near the university area, and 1 drug-related incident. The pattern shows higher activity on weekends, particularly in commercial zones."
 ```
 
 ### Specific Crime Analysis
 ```
 👤 User: "Show me assault cases"
-🤖 Crime Chronicle: "I found 5 assault incidents in the database: 2 cases in District B occurring during late evening hours, 2 cases in District C near entertainment venues, and 1 case in District A near residential areas. Most incidents involved altercations and occurred on Friday/Saturday nights."
+🤖 CrimeScope: "I found 5 assault incidents in the database: 2 cases in District B occurring during late evening hours, 2 cases in District C near entertainment venues, and 1 case in District A near residential areas. Most incidents involved altercations and occurred on Friday/Saturday nights."
 ```
 
 ---
@@ -253,6 +253,8 @@ crime-chronicle/
 <div align="center">
 
 **⭐ Star this repository if you find it useful!**
+
+Contact: gadapa.abhiram.16@gmail.com
 
 Made with ❤️ by Abhiram Gadapa
 
