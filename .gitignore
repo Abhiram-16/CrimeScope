@@ -12,3 +12,9 @@ __pycache__/
 # Backup and test files
 src/app_backup.py
 test_model.py
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+models/
