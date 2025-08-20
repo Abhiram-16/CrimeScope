@@ -1,0 +1,14 @@
+my-env/
+venv/
+data/
+vector_store/
+models/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+*.log
+
+# Backup and test files
+src/app_backup.py
+test_model.py

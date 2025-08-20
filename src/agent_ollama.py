@@ -8,16 +8,14 @@ from langchain.agents import Tool, AgentExecutor, ZeroShotAgent
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 
-# Fix import path for forecasting
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from forecasting import predict_future
 
 print("Initializing Ollama LLM...")
-# THIS IS THE MAIN CHANGE - Using Ollama instead of HuggingFace
 llm = OllamaLLM(
-    model="mistral:7b-instruct-q4_K_M",  # or "llama3.2:3b-instruct-q8_0" for faster
+    model="mistral:7b-instruct-q4_K_M",  
     temperature=0.3,
-    num_predict=512,  # max tokens to generate
+    num_predict=512,  # max tokens 
     num_ctx=4096,     # context window
     verbose=True
 )
@@ -32,7 +30,7 @@ except Exception as e:
     print("Make sure 'ollama serve' is running in another terminal!")
     exit(1)
 
-# ========== KNOWLEDGE BASE SETUP (Same as before) ==========
+# ========== KNOWLEDGE BASE SETUP ==========
 print("Preparing the Knowledge Base...")
 base_dir = os.path.dirname(os.path.abspath(__file__))
 faiss_index_path = os.path.join(base_dir, "..", "vector_store", "faiss_index.index")
@@ -59,7 +57,7 @@ def retrieve_from_faiss(query: str, k: int = 5):
     # Map common names to actual district names
     # Only map if it's a standalone word, not part of "District D"
     district_mapping = {
-        "downtown": "District C",  # Assuming District C is downtown
+        "downtown": "District C",  
         "central": "District C",
         "north": "District A",
         "south": "District E",
@@ -205,7 +203,7 @@ agent_executor = AgentExecutor.from_agent_and_tools(
     verbose=True,
     max_iterations=2,  # Reduced from 3 to prevent loops
     handle_parsing_errors=True,
-    early_stopping_method="force",  # Force stop after max iterations
+    early_stopping_method="generate",  # Force stop after max iterations
     return_intermediate_steps=False
 )
 
