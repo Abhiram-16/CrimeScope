@@ -18,7 +18,7 @@ def home():
 @app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint"""
-    return jsonify({"status": "healthy", "service": "Crime Forecaster AI"})
+    return jsonify({"status": "healthy", "service": "CrimeScope AI"})
 
 @app.route('/chat', methods=['POST'])
 def chat():

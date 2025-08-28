@@ -2,6 +2,9 @@ import os
 import sys
 import faiss
 import numpy as np
+import random
+from datetime import datetime, timedelta
+import re
 from sentence_transformers import SentenceTransformer
 from langchain_ollama import OllamaLLM
 from langchain.agents import Tool, AgentExecutor, ZeroShotAgent
@@ -47,68 +50,76 @@ embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 with open(docs_store_path, "r", encoding="utf-8") as f:
     documents = [line.strip() for line in f if line.strip()]
 
+import random
+
+import random
+import re
+from datetime import datetime
+
 def retrieve_from_faiss(query: str, k: int = 5):
-    """Search past crime events in the knowledge base"""
+    """Search with forced diversity for district queries"""
     print(f"[TOOL LOG] Crime_Retriever called with query: {query}")
     
-    # Handle common district queries
+    # District mapping (keep your existing code)
     query_lower = query.lower()
-    
-    # Map common names to actual district names
-    # Only map if it's a standalone word, not part of "District D"
     district_mapping = {
-        "downtown": "District C",  
-        "central": "District C",
-        "north": "District A",
-        "south": "District E",
-        "east": "District B",
-        "west": "District D",
+        "downtown": "District C", "central": "District C",
+        "north": "District A", "south": "District E", 
+        "east": "District B", "west": "District D",
     }
     
-    # Check if query already contains "District" (like "District D")
     if "district" not in query_lower:
-        # Only then check for single letter districts
         single_letter_mapping = {
-            "a": "District A",
-            "b": "District B", 
-            "c": "District C",
-            "d": "District D",
-            "e": "District E"
+            "a": "District A", "b": "District B", "c": "District C", 
+            "d": "District D", "e": "District E"
         }
-        
-        # Check if query is asking for a specific district
         for common_name, actual_district in district_mapping.items():
             if common_name in query_lower:
                 query = actual_district
-                print(f"[TOOL LOG] Mapped '{common_name}' to '{actual_district}'")
                 break
-        
-        # Check for single letter districts
         if query_lower.strip() in single_letter_mapping:
             query = single_letter_mapping[query_lower.strip()]
-            print(f"[TOOL LOG] Mapped '{query_lower.strip()}' to '{query}'")
     
-    query_emb = embedding_model.encode([query])
-    distances, indices = index.search(np.array(query_emb).astype("float32"), k)
-    results = []
-    for idx in indices[0]:
-        if idx != -1 and idx < len(documents):
-            results.append(documents[idx])
-    
-    # If searching for a specific district, filter results
+    # For district queries, use direct filtering instead of FAISS search
     if "District" in query:
-        filtered_results = [r for r in results if query in r]
-        if filtered_results:
-            results = filtered_results
-            print(f"[TOOL LOG] Filtered to {len(results)} results for {query}")
+        print(f"[TOOL LOG] Using direct filtering for district query: {query}")
+        
+        # Filter documents directly by district
+        district_docs = [doc for doc in documents if query in doc]
+        print(f"[TOOL LOG] Found {len(district_docs)} documents for {query}")
+        
+        # Group by crime type for forced diversity
+        crime_groups = {}
+        for doc in district_docs:
+            crime_match = re.search(r'Incident Type: ([^\s]+)', doc)
+            if crime_match:
+                crime_type = crime_match.group(1)
+                if crime_type not in crime_groups:
+                    crime_groups[crime_type] = []
+                crime_groups[crime_type].append(doc)
+        
+        print(f"[TOOL LOG] Found crime types: {list(crime_groups.keys())}")
+        
+        # Select one random incident from each crime type (up to 5 types)
+        diverse_results = []
+        for crime_type in sorted(crime_groups.keys())[:5]:
+            selected = random.choice(crime_groups[crime_type])
+            diverse_results.append(selected)
+        
+        return "\n".join(diverse_results)
     
-    if results:
-        print(f"[TOOL LOG] Crime_Retriever returning {len(results)} results")
-        return "\n".join(results)
     else:
-        print("[TOOL LOG] Crime_Retriever found no matching records")
-        return "No matching past records found."
-
+        # Use normal FAISS search for non-district queries
+        query_emb = embedding_model.encode([query])
+        distances, indices = index.search(np.array(query_emb).astype("float32"), k)
+        
+        results = []
+        for idx in indices[0]:
+            if idx != -1 and idx < len(documents):
+                results.append(documents[idx])
+        
+        return "\n".join(results) if results else "No matching records found."
+    
 # ========== FORECASTING SETUP (Same as before) ==========
 print("Preparing the Forecasting Model...")
 def forecast_tool_wrapper(days: str):
@@ -153,6 +164,13 @@ prefix = """You are a helpful crime data assistant with access to tools.
 Available tools:
 {tools}
 
+CRIME CODE DEFINITIONS:
+- UUV = Unlawful Use of Vehicle (car theft/auto theft)
+- LARCENY/THEFT = General theft incidents
+- ASSAULT = Physical attack or threat
+- BURGLARY = Breaking and entering
+- ROBBERY = Theft using force or threat
+
 To answer questions, use this EXACT format:
 
 Question: the input question you must answer
@@ -169,6 +187,12 @@ CRITICAL RULES:
 3. Do NOT repeat the same action twice
 4. When you have crime data from the Observation, summarize it in your Final Answer
 5. For vague questions about crime rates, use Crime_Forecaster to predict daily averages
+
+IMPORTANT CONTEXT:
+- The Crime_Retriever returns a SAMPLE of matching incidents, not all incidents
+- When showing historical data, clarify these are "recent examples" or "sample incidents"
+- Never claim these are the only incidents or provide total counts based on samples
+- Focus on patterns and types of crimes rather than exact counts
 
 Important:
 - For past events, use Crime_Retriever
