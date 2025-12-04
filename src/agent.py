@@ -153,7 +153,7 @@ agent_executor = AgentExecutor.from_agent_and_tools(
     handle_parsing_errors=True,
     max_iterations=1
 )
-
+#agent log recovery and chat history additions in progress
 print("✅ Robot is ready to chat with its final brain!")
 
 def run_agent(user_input: str):
@@ -174,7 +174,7 @@ def run_agent(user_input: str):
 
         # Trim output at END_OF_ANSWER
         response = response.split("END_OF_ANSWER")[0].strip()
-
+          
         placeholders = ["[Date]", "[Location]", "[Details]", "[Type of Crime]"]
         if any(ph in response for ph in placeholders):
             print("[AGENT WARNING] Placeholder detected in response.")

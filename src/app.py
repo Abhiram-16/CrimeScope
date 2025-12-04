@@ -47,4 +47,4 @@ if __name__ == '__main__':
     print("🌐 Share this link for others to use (on same network)")
     print("\n" + "="*60 + "\n")
     
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    app.run(host='0.0.0.0', port=4000, debug=False)
